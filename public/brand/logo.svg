@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 56" width="200" height="56">
+  
+  <g transform="translate(8 8)" fill="none" stroke="#1F6A4B" stroke-width="1.75" stroke-linejoin="round">
+    <path d="M20 0 C31 0 40 9 40 20 L40 40 L0 40 L0 20 C0 9 9 0 20 0 Z"></path>
+    <g transform="translate(20 22)">
+      <polygon points="0,-9 2.5,-2.5 9,0 2.5,2.5 0,9 -2.5,2.5 -9,0 -2.5,-2.5" fill="#C9A24F" stroke="none" opacity="0.9"></polygon>
+      <polygon points="0,-9 2.5,-2.5 9,0 2.5,2.5 0,9 -2.5,2.5 -9,0 -2.5,-2.5" transform="rotate(45)" fill="none" stroke="#1F6A4B" stroke-width="1.25"></polygon>
+    </g>
+  </g>
+  
+  <text x="60" y="36" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-size="22" fill="#14211B" letter-spacing="-0.5">Quran<tspan fill="#1F6A4B">Lens</tspan></text>
+</svg>
