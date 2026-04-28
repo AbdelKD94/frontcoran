@@ -1,6 +1,5 @@
 import {
   buildSearchParams,
-  mapSemanticResponseToGuidanceResponse,
   mapSemanticResult,
   normalizeAyah,
   normalizeSurah,
@@ -19,9 +18,55 @@ import type {
   SemanticSearchResponse,
   Surah,
   SurahDetail,
+  TafsirAyahResponse,
+  TafsirSource,
   TextIndexResponse,
   Translation,
 } from "@/lib/types";
+
+type BackendGuidanceResponse = {
+  query: string;
+  analysis: {
+    themes: string[];
+    emotions?: string[];
+    intent: string;
+    is_sensitive: boolean;
+    sensitive_category?: string | null;
+    safety_message?: string | null;
+    expanded_query?: string;
+  };
+  results: Array<{
+    id: string;
+    type: "ayah" | "passage";
+    reference: string;
+    surah_number: number;
+    ayah_start: number;
+    ayah_end: number;
+    arabic_text?: string | null;
+    translation_fr?: string | null;
+    score: number;
+    rerank_score?: number | null;
+    reason: string;
+    themes: string[];
+    needs_context?: boolean;
+  }>;
+  explore_more: string[];
+  suggested_queries: string[];
+  disclaimer: string;
+  provider?: string;
+  reranker?: {
+    provider: string;
+    model?: string | null;
+    candidate_count?: number;
+    fallback_used?: boolean;
+    fallback_reason?: string | null;
+    rerank_ms?: number | null;
+  } | null;
+  retrieval_ms?: number | null;
+  rerank_ms?: number | null;
+  total_ms?: number | null;
+  total: number;
+};
 
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "http://localhost:8010";
@@ -93,6 +138,24 @@ export function getTranslations(
   );
 }
 
+export function getTafsirForAyah(
+  surahNumber: number,
+  ayahNumber: number,
+  options: { language?: string; sourceKey?: string } = {},
+) {
+  const params = buildSearchParams({
+    language: options.language ?? "fr",
+    source_key: options.sourceKey,
+  });
+  return apiFetch<TafsirAyahResponse>(
+    `/api/tafsir/ayahs/${surahNumber}/${ayahNumber}${params ? `?${params}` : ""}`,
+  );
+}
+
+export function getTafsirSources() {
+  return apiFetch<TafsirSource[]>("/api/tafsir/sources");
+}
+
 export function searchQuranText(query: string, language?: string, limit = 20) {
   const params = buildSearchParams({ q: query, language, limit });
   return apiFetch<SearchResponse>(`/api/quran/search?${params}`).then((response) => ({
@@ -127,12 +190,61 @@ export async function guidanceSearch(
   query: string,
   options: { language?: string; limit?: number } = {},
 ): Promise<GuidanceSearchResponse> {
-  const response = await semanticSearch(query, {
-    language: options.language ?? "fr",
-    limit: options.limit ?? 10,
+  const response = await apiFetch<BackendGuidanceResponse>("/api/guidance/search", {
+    method: "POST",
+    body: JSON.stringify({
+      query,
+      language: options.language ?? "fr",
+      limit: options.limit ?? 5,
+      include_explanations: true,
+    }),
   });
 
-  return mapSemanticResponseToGuidanceResponse(response, query);
+  return {
+    query: response.query,
+    detected: {
+      themes: response.analysis.themes,
+      emotions: response.analysis.emotions,
+      intent: response.analysis.intent,
+      isSensitive: response.analysis.is_sensitive,
+      sensitiveCategory: response.analysis.sensitive_category,
+      safetyMessage: response.analysis.safety_message,
+      expandedQuery: response.analysis.expanded_query,
+    },
+    results: response.results.map((result) => ({
+      id: result.id,
+      type: result.type,
+      reference: result.reference,
+      surahNumber: result.surah_number,
+      ayahStart: result.ayah_start,
+      ayahNumber: result.ayah_start,
+      ayahEndNumber: result.ayah_end,
+      arabicText: result.arabic_text ?? undefined,
+      translationFr: result.translation_fr ?? null,
+      score: result.rerank_score ?? result.score,
+      reason: result.reason,
+      themes: result.themes,
+      needsContext: result.needs_context,
+    })),
+    exploreMore: response.explore_more,
+    suggestedQueries: response.suggested_queries,
+    disclaimer: response.disclaimer,
+    provider: response.provider,
+    reranker: response.reranker
+      ? {
+          provider: response.reranker.provider,
+          model: response.reranker.model,
+          candidateCount: response.reranker.candidate_count,
+          fallbackUsed: response.reranker.fallback_used,
+          fallbackReason: response.reranker.fallback_reason,
+          rerankMs: response.reranker.rerank_ms,
+        }
+      : null,
+    retrievalMs: response.retrieval_ms,
+    rerankMs: response.rerank_ms,
+    totalMs: response.total_ms,
+    total: response.total,
+  };
 }
 
 export function indexText(scope: string, languageCode?: string, forceReindex = false) {
@@ -216,6 +328,8 @@ export const api = {
   getSurah,
   getAyah,
   getTranslations,
+  getTafsirForAyah,
+  getTafsirSources,
   searchText: searchQuranText,
   searchQuranText,
   semanticSearch: (query: string, languageCode?: string, limit = 10) =>
@@ -245,5 +359,7 @@ export type {
   SemanticSearchResponse,
   Surah,
   SurahDetail,
+  TafsirAyahResponse,
+  TafsirSource,
   Translation,
 };

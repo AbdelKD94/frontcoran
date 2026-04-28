@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { BookOpenText, ChevronRight } from "lucide-react";
 import { AudioButton } from "@/components/audio/AudioButton";
 import { WhyThisResultBox } from "@/components/guidance/WhyThisResultBox";
 import { FavoriteButton } from "@/components/ui/FavoriteButton";
@@ -48,6 +48,10 @@ export function GuidanceResultCard({ result, delay = 0 }: GuidanceResultCardProp
         <Link className="secondary-action" href={`/ayah/${result.surahNumber}/${result.ayahNumber}`}>
           Voir détail
           <ChevronRight aria-hidden="true" />
+        </Link>
+        <Link className="secondary-action" href={`/ayah/${result.surahNumber}/${result.ayahNumber}#tafsir`}>
+          Explication
+          <BookOpenText aria-hidden="true" />
         </Link>
         <AudioButton surahNumber={result.surahNumber} ayahNumber={result.ayahNumber} />
         <FavoriteButton item={guidanceResultToFavorite(result)} />

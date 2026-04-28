@@ -764,6 +764,102 @@ main {
   line-height: 1.5;
 }
 
+.tafsir-card {
+  margin-top: 18px;
+  padding: 20px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.tafsir-heading {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.tafsir-heading svg {
+  width: 36px;
+  height: 36px;
+  padding: 9px;
+  border-radius: 12px;
+  color: var(--fg-emerald);
+  background: var(--accent-soft);
+  flex: 0 0 auto;
+}
+
+.tafsir-heading h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.tafsir-entry-list {
+  display: grid;
+  gap: 12px;
+}
+
+.tafsir-entry {
+  padding: 14px 0 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.tafsir-entry:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.tafsir-source-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.tafsir-source-row strong {
+  color: var(--fg-emerald);
+  font-size: 13px;
+}
+
+.tafsir-source-row span {
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: var(--ql-sand-600);
+  background: var(--gold-soft);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.tafsir-entry p,
+.tafsir-muted,
+.tafsir-disclaimer,
+.tafsir-footnotes,
+.tafsir-license {
+  margin: 0;
+  color: var(--fg-2);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.tafsir-toggle {
+  margin-top: 10px;
+}
+
+.tafsir-footnotes {
+  margin-top: 12px;
+  color: var(--fg-3);
+}
+
+.tafsir-license,
+.tafsir-disclaimer {
+  margin-top: 12px;
+  color: var(--fg-4);
+  font-size: 12px;
+}
+
 .result-footer {
   display: flex;
   align-items: center;

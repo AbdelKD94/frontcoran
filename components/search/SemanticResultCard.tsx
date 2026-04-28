@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { BookOpenText, ChevronRight } from "lucide-react";
 import { AudioButton } from "@/components/audio/AudioButton";
 import { FavoriteButton } from "@/components/ui/FavoriteButton";
 import {
@@ -61,6 +61,13 @@ export function SemanticResultCard({ result, delay = 0 }: SemanticResultCardProp
         >
           Voir détail
           <ChevronRight aria-hidden="true" />
+        </Link>
+        <Link
+          className="secondary-action"
+          href={`/ayah/${result.surah_number}/${result.ayah_number}#tafsir`}
+        >
+          Explication
+          <BookOpenText aria-hidden="true" />
         </Link>
         <AudioButton surahNumber={result.surah_number} ayahNumber={result.ayah_number} />
         <FavoriteButton item={resultToFavorite(result)} />

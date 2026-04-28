@@ -80,15 +80,20 @@ export type SemanticSearchResponse = {
 
 export type GuidanceQueryAnalysis = {
   themes: string[];
+  emotions?: string[];
   intent: string;
   isSensitive: boolean;
+  sensitiveCategory?: string | null;
+  safetyMessage?: string | null;
+  expandedQuery?: string;
 };
 
 export type GuidanceResult = {
   id: string;
-  type: "ayah";
+  type: "ayah" | "passage";
   reference: string;
   surahNumber: number;
+  ayahStart?: number;
   ayahNumber: number;
   ayahEndNumber?: number;
   surahName?: string;
@@ -106,8 +111,58 @@ export type GuidanceSearchResponse = {
   results: GuidanceResult[];
   exploreMore: string[];
   suggestedQueries: string[];
+  disclaimer?: string;
   provider?: string;
+  reranker?: {
+    provider: string;
+    model?: string | null;
+    candidateCount?: number;
+    fallbackUsed?: boolean;
+    fallbackReason?: string | null;
+    rerankMs?: number | null;
+  } | null;
+  retrievalMs?: number | null;
+  rerankMs?: number | null;
+  totalMs?: number | null;
   total: number;
+};
+
+export type TafsirEntry = {
+  id: number;
+  source_key: string;
+  source_name: string;
+  source_language: string;
+  source_type: string;
+  surah_number: number;
+  ayah_start: number;
+  ayah_end: number;
+  ayah_keys?: string[] | null;
+  text: string;
+  summary?: string | null;
+  footnotes?: string | null;
+  source_url?: string | null;
+  license_info?: string | null;
+  version?: string | null;
+  is_verified?: boolean;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type TafsirAyahResponse = {
+  surah_number: number;
+  ayah_number: number;
+  entries: TafsirEntry[];
+  total: number;
+  disclaimer: string;
+};
+
+export type TafsirSource = {
+  source_key: string;
+  source_name: string;
+  language: string;
+  source_type: string;
+  entry_count: number;
+  is_available: boolean;
 };
 
 export type TextIndexResponse = {

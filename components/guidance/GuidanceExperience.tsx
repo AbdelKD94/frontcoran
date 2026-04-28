@@ -39,7 +39,7 @@ export function GuidanceExperience() {
         setLoading(true);
         setError(null);
         setValidationMessage(null);
-        return guidanceSearch(trimmedQuery, { language: "fr", limit: 10 });
+        return guidanceSearch(trimmedQuery, { language: "fr", limit: 5 });
       })
       .then((response) => {
         if (active && response) setData(response);
